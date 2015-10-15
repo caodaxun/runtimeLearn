@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITableViewDelegate> {
+    NSString *name;
+}
+@property (nonatomic, strong) NSString *testString;
 
+- (void)testMethod;
 
 @end
 

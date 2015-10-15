@@ -13,6 +13,7 @@
 		F68CA8711BCF47C300F964A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F68CA86F1BCF47C300F964A3 /* Main.storyboard */; };
 		F68CA8731BCF47C300F964A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F68CA8721BCF47C300F964A3 /* Assets.xcassets */; };
 		F68CA8761BCF47C300F964A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F68CA8741BCF47C300F964A3 /* LaunchScreen.storyboard */; };
+		F68CA88F1BCF99C500F964A3 /* UIViewController+Tracking.m in Sources */ = {isa = PBXBuildFile; fileRef = F68CA88E1BCF99C500F964A3 /* UIViewController+Tracking.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		F68CA8721BCF47C300F964A3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F68CA8751BCF47C300F964A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F68CA8771BCF47C300F964A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F68CA88D1BCF99C500F964A3 /* UIViewController+Tracking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Tracking.h"; sourceTree = "<group>"; };
+		F68CA88E1BCF99C500F964A3 /* UIViewController+Tracking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Tracking.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,8 @@
 				F68CA86A1BCF47C300F964A3 /* AppDelegate.m */,
 				F68CA86C1BCF47C300F964A3 /* ViewController.h */,
 				F68CA86D1BCF47C300F964A3 /* ViewController.m */,
+				F68CA88D1BCF99C500F964A3 /* UIViewController+Tracking.h */,
+				F68CA88E1BCF99C500F964A3 /* UIViewController+Tracking.m */,
 				F68CA86F1BCF47C300F964A3 /* Main.storyboard */,
 				F68CA8721BCF47C300F964A3 /* Assets.xcassets */,
 				F68CA8741BCF47C300F964A3 /* LaunchScreen.storyboard */,
@@ -150,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F68CA86E1BCF47C300F964A3 /* ViewController.m in Sources */,
+				F68CA88F1BCF99C500F964A3 /* UIViewController+Tracking.m in Sources */,
 				F68CA86B1BCF47C300F964A3 /* AppDelegate.m in Sources */,
 				F68CA8681BCF47C300F964A3 /* main.m in Sources */,
 			);
@@ -298,6 +304,7 @@
 				F68CA87C1BCF47C300F964A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
