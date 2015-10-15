@@ -1,7 +1,19 @@
 # runtimeLearn
 runtime
 
-<http://www.cocoachina.com/ios/20150901/13173.html>
+学习runtime的理解和心得<http://www.cocoachina.com/ios/20150901/13173.html>
+
+OC Runtime 运行时之一：类与对象<http://www.cocoachina.com/ios/20141031/10105.html>
+
+OC Runtime 运行时之二：成员变量与属性<http://www.cocoachina.com/ios/20141105/10134.html>
+
+OC Runtime 运行时之三：方法与消息<http://www.cocoachina.com/ios/20141106/10150.html>
+
+OC Runtime 运行时之四：Method Swizzling <http://www.cocoachina.com/ios/20140225/7880.html>
+
+OC Runtime 运行时之五：协议与分类<http://www.cocoachina.com/ios/20141110/10174.html>
+
+OC Runtime 运行时之六：<http://www.cocoachina.com/ios/20141111/10186.html>
 
 * 获取列表
 * 方法调用
@@ -114,6 +126,19 @@ runtime
 	3、如果没找到，去父类指针所指向的对象中执行1，2.
 	4、以此类推，如果一直到根类还没找到，转向拦截调用。
 	5、如果没有重写拦截调用的方法，程序报错。
+
+	针对cache，我们用下面例子来说明其执行过程：
+
+	NSArray *array = [[NSArray alloc] init];
+	其流程是：
+
+	[NSArray alloc]先被执行。因为NSArray没有+alloc方法，于是去父类NSObject去查找。
+
+	检测NSObject是否响应+alloc方法，发现响应，于是检测NSArray类，并根据其所需的内存空间大小开始分配内存空间，然后把isa指针指向NSArray类。同时，+alloc也被加进cache列表里面。
+
+	接着，执行-init方法，如果NSArray响应该方法，则直接将其加入cache；如果不响应，则去父类查找。
+
+	在后期的操作中，如果再以[[NSArray alloc] init]这种方式来创建数组，则会直接从cache中取出相应的方法，直接调用
 
 ##### 拦截调用
 在方法调用中说到了，如果没有找到方法就会转向拦截调用。
