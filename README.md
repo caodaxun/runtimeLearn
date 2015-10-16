@@ -15,6 +15,10 @@ OC Runtime 运行时之五：协议与分类<http://www.cocoachina.com/ios/20141
 
 OC Runtime 运行时之六：<http://www.cocoachina.com/ios/20141111/10186.html>
 
+Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
+
+使用runtime解决UIButton 重复点击问题 <http://www.cocoachina.com/ios/20150911/13260.html>
+
 * 获取列表
 * 方法调用
 * 拦截调用
