@@ -242,9 +242,12 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
 方法交换，顾名思义，就是将两个方法的实现交换。例如，将A方法和B方法交换，调用A方法的时候，就会执行B方法中的代码，反之亦然。
 
 method swizzling可以通过选择器来改变它引用的函数指针。
-
+	
+	//load方法会在类第一次加载的时候被调用
+	//调用的时间比较靠前，适合在这个方法里做方法交换
 	+ (void)load {
-    
+   
+		//方法交换应该被保证，在程序中只会执行一次
     	static dispatch_once_t onceToken;
     	dispatch_once(&onceToken, ^{
         
@@ -258,13 +261,16 @@ method swizzling可以通过选择器来改变它引用的函数指针。
         
         	Method originalMethod = class_getInstanceMethod(class, originalSelector);
         	Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-        
+        	
+        	//首先动态添加方法，实现是被交换的方法，返回值表示添加成功还是失败
         	BOOL didAddMethod = class_addMethod(class,
                                             originalSelector,
                                             method_getImplementation(swizzledMethod),
                                             method_getTypeEncoding(swizzledMethod));
         
         	if (didAddMethod) {
+        		//如果成功，说明类中不存在这个方法的实现
+           	    //将被交换方法的实现替换到这个并不存在的实现
             	class_replaceMethod(class,
                                 swizzledSelector,
                                 method_getImplementation(originalMethod),
