@@ -26,7 +26,7 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
 * 关联对象
 * 方法交换
 	
-	
+	不咋会用啊除了会用关联
 #####相关的定义：
 	
 	/// 描述类中的一个方法
@@ -45,16 +45,16 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
     	Class isa;//指针，顾名思义，表示是一个什么，
     	//实例的isa指向类对象，类对象的isa指向元类
 		#if !__OBJC2__
-    	Class super_class;  //指向父类
-    	const char *name;  //类名
+    	Class super_class;  		//指向父类
+    	const char *name;  			//类名
     	long version;
     	long info;
-    	long instance_size
-    	struct objc_ivar_list *ivars //成员变量列表
-    	struct objc_method_list **methodLists; //方法列表
-    	struct objc_cache *cache;//缓存
+    	long instance_size						 //类的实例变量大小
+    	struct objc_ivar_list *ivars 			 //成员变量列表
+    	struct objc_method_list **methodLists;  //方法列表
+    	struct objc_cache *cache;				 //缓存
     	//一种优化，调用过的方法存入缓存列表，下次调用先找缓存
-    	struct objc_protocol_list *protocols //协议列表
+    	struct objc_protocol_list *protocols 	 //协议列表
     	#endif
 	} OBJC2_UNAVAILABLE;
 	/* Use `Class` instead of `struct objc_class *` */
@@ -143,6 +143,17 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
 	接着，执行-init方法，如果NSArray响应该方法，则直接将其加入cache；如果不响应，则去父类查找。
 
 	在后期的操作中，如果再以[[NSArray alloc] init]这种方式来创建数组，则会直接从cache中取出相应的方法，直接调用
+	
+***
+	当我们向一个Objective-C对象发送消息时，运行时库会根据实例对象的isa指针找到这个实例对象所属的类。Runtime库会在类的方法
+	列表及父类的方法列表中去寻找与消息对应的selector指向的方法。找到后即运行这个方法
+
+	当我们向一个对象发送消息时，runtime会在这个对象所属的这个类的方法列表中查找方法；而向一个类发送消息时，会在这个类的
+	meta-class的方法列表中查找
+	
+	meta-class之所以重要，是因为它存储着一个类的所有类方法。每个类都会有一个单独的meta-class，因为每个类的类方法基本不可能完全相同
+	
+	Objective-C的设计者让所有的meta-class的isa指向基类的meta-class，以此作为它们的所属类。即，任何NSObject继承体系下的meta-class都使用NSObject的meta-class作为自己的所属类，而基类的meta-class的isa指针是指向它自己
 
 ##### 拦截调用
 在方法调用中说到了，如果没有找到方法就会转向拦截调用。
@@ -172,7 +183,8 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
 	//隐式调用方法
 	[target performSelector:@selector(resolveAdd:) withObject:@"test"];
 	然后，在target对象内部重写拦截调用的方法，动态添加方法。
-
+	
+	//一个Objective-C方法是一个简单的C函数，它至少包含两个参数—self和_cmd。所以，我们的实现函数(IMP参数指向的函数)至少需要两个参数
 	void runAddMethod(id self, SEL _cmd, NSString *string){
     	NSLog(@"add C IMP ", string);
 	}
@@ -181,8 +193,39 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
     	if ([NSStringFromSelector(sel) isEqualToString:@"resolveAdd:"]) {
     	    class_addMethod(self, sel, (IMP)runAddMethod, "v@:*");
     	}
-    	return YES;
+    	return [super resolveInstanceMethod:sel];
 	}
+	
+	如果上一步无法处理消息，则runtime会继续调用下面方法
+	- (id)forwardingTargetForSelector:(SEL)aSelector {
+    
+    	NSString *selectorString = NSStringFromSelector(aSelector);
+    	//将消息转发给 customClass来处理
+    	if ([selectorString isEqualToString:@"resolvedAdd:"]) {
+        	return _customClass;
+    	}
+    	return [super forwardingTargetForSelector:aSelector];
+	}
+	如果上一步还不能处理未知消息 会调用 forwardInvocation 启用完整的消息转发机制了
+	要重写methodSigna...这个方法
+	- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+    
+    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];
+    if (!signature) {
+        if ([CustomClass instancesRespondToSelector:aSelector]) {
+            signature = [CustomClass instanceMethodSignatureForSelector:aSelector];
+        }
+    }
+    return signature;
+	}
+
+	- (void)forwardInvocation:(NSInvocation *)anInvocation {
+    	if ([CustomClass instancesRespondToSelector:anInvocation.selector]) {
+        	[anInvocation invokeWithTarget:_customClass];
+    	}
+    
+	}
+	
 	其中class_addMethod的四个参数分别是：
 
 	Class cls 给哪个类添加方法，本例中是self
@@ -290,6 +333,12 @@ method swizzling可以通过选择器来改变它引用的函数指针。
     	[self xxx_viewWillAppear:animated];
     	NSLog(@"viewWillAppear2: %@", self);
 	}
+
+###### 其它
+
+IMP实际上是一个函数指针，指向方法的实现
+
+
 
 
 
