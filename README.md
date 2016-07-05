@@ -19,6 +19,8 @@ Runtime初涉之消息转发 <http://www.cocoachina.com/ios/20151015/13769.html>
 
 使用runtime解决UIButton 重复点击问题 <http://www.cocoachina.com/ios/20150911/13260.html>
 
+method swizzling 的第三方库 <https://github.com/rentzsch/jrswizzle>
+
 * 获取列表
 * 方法调用
 * 拦截调用
@@ -333,6 +335,10 @@ method swizzling可以通过选择器来改变它引用的函数指针。
     	[self xxx_viewWillAppear:animated];
     	NSLog(@"viewWillAppear2: %@", self);
 	}
+	
+	
+	
+	
 
 ###### 其它
 
